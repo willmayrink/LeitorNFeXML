@@ -10,5 +10,5 @@ _This project is an application developed with the intention of making it clear 
 ---
 
 
-> [!IMPORTANT]
+> [!WARNING]
 > _The main purpose of this project is to work with_ `.xml` _files and `<tags>`. Probably there'll be more enhancement and improvement openings, opportunities or even new functionalities required, but those will not be the main focus._
