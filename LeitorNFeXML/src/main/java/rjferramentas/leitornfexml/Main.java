@@ -5,6 +5,8 @@
 package rjferramentas.leitornfexml;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -17,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.parsers.DocumentBuilder;
@@ -37,6 +40,7 @@ public class Main extends javax.swing.JFrame {
 
     public Main() {
         initComponents();
+        //this.setIconImage("//img//calendar.png");
         mdlTable.addColumn("Fatura número");
         mdlTable.addColumn("Data vencimento");
         mdlTable.addColumn("Valor parcela");
@@ -58,10 +62,12 @@ public class Main extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDup = new javax.swing.JTable();
         lblEmissao = new javax.swing.JLabel();
+        pbLoading = new javax.swing.JProgressBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Leitor NFe Entrada");
 
+        btnXML.setIcon(new javax.swing.ImageIcon("C:\\Users\\Will\\Documents\\Development\\Java\\LeitorNFeXML\\LeitorNFeXML\\src\\main\\resources\\img\\search_file.png")); // NOI18N
         btnXML.setText("Arquivo XML");
         btnXML.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -88,19 +94,21 @@ public class Main extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(btnXML)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
                         .addComponent(txtEmissor, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(lblEmissao, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(pbLoading, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
+                            .addComponent(lblEmissao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -114,9 +122,11 @@ public class Main extends javax.swing.JFrame {
                     .addComponent(btnXML))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(lblEmissao, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblEmissao, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pbLoading, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14))
         );
 
         pack();
@@ -145,7 +155,7 @@ public class Main extends javax.swing.JFrame {
                 String date = getDate(document);
                 lblEmissao.setText("Data de Emissão:  " + date + " (GMT-03:00)");
                 mdlTable.setRowCount(0);
-
+                pbIncrease();
                 // Add dup tags to table
                 addDupToTable(document, mdlTable);
                 // model.addRow(new Object[]{selectedFile.getName(), "XML"});
@@ -175,6 +185,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblEmissao;
+    private javax.swing.JProgressBar pbLoading;
     private javax.swing.JTable tblDup;
     private javax.swing.JTextField txtEmissor;
     // End of variables declaration//GEN-END:variables
@@ -264,4 +275,18 @@ public class Main extends javax.swing.JFrame {
             }
         }
     }
+    private void pbIncrease() {
+    final int[] percentage = {0}; // Array to allow modification in lambda
+    Timer timer = new Timer(10, e -> {
+        if (percentage[0] <= 100) {
+            pbLoading.setValue(percentage[0]);
+            System.out.println(percentage[0]);
+            percentage[0]++;
+        } else {
+            ((Timer) e.getSource()).stop(); // Stop the timer
+        }
+    });
+    timer.start();
+}
+    
 }
